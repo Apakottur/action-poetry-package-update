@@ -36,3 +36,4 @@ runs:
         branch-suffix: timestamp
         delete-branch: true
         title: Update Python packages
+        base: main
