@@ -40,6 +40,7 @@ runs:
       shell: bash
 
     - name: Check if any changes were made
+      id: changes
       uses: UnicornGlobal/has-changes-action@v1.0.11
 
     - name: Create PR with updates
