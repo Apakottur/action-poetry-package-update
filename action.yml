@@ -1,6 +1,9 @@
-name: "Python Poetry Action"
+name: "Python Poetry automatic updates"
 author: "@Apakottur"
-description: "Create a PR that updates packages to latest possible versions, based on Poetry configuration files"
+description: "Create a PR that updates Python packages to latest possible versions, based on Poetry configuration files"
+branding:
+  icon: chevrons-up
+  color: purple
 inputs:
   base-branch:
     description: "Base branch, to run the updater on"
