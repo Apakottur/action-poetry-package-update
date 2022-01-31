@@ -29,6 +29,9 @@ def main():
 
             # Update the file contents, for each outdated package.
             for result in results.stdout.strip().split("\n"):
+                # Remove the "(!)" decoration used to mark packages as non installed.
+                result = result.replace("(!)", "")
+
                 # Get the package details.
                 package_name, installed_version, new_version = result.split(" ")[:3]
 
