@@ -25,7 +25,7 @@ def main():
             shpyx.run("poetry update --lock", exec_dir=root)
 
             # Get all the outdated packages.
-            results = shpyx.run("poetry show -o --no-ansi", exec_dir=root)
+            results = shpyx.run("poetry show -o --no-ansi", log_output=True, exec_dir=root)
 
             # Update the file contents, for each outdated package.
             for result in results.stdout.strip().split("\n"):
@@ -33,7 +33,7 @@ def main():
                 result = result.replace(" (!) ", " ")
 
                 # Get the package details.
-                package_name, installed_version, new_version = result.split(" ")[:3]
+                package_name, installed_version, new_version = result.split()[:3]
 
                 # Replace the package version, supporting both single and double quotes.
                 file_contents = file_contents.replace(
