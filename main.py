@@ -22,10 +22,10 @@ def main():
                 continue
 
             # Update the lock file, creating it if needed.
-            shpyx.run("poetry update --lock", log_output=True, exec_dir=root)
+            shpyx.run("poetry update --lock", exec_dir=root)
 
             # Get all the outdated packages.
-            results = shpyx.run("poetry show -o", log_output=True, exec_dir=root)
+            results = shpyx.run("poetry show -o --no-ansi", log_output=True, exec_dir=root)
 
             # Update the file contents, for each outdated package.
             for result in results.stdout.strip().split("\n"):
