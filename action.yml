@@ -3,15 +3,15 @@ author: "@Apakottur"
 description: "Create a PR that updates packages to latest possible versions, based on Poetry configuration files"
 inputs:
   base-branch:
-    description: "The base branch to check"
+    description: "Base branch, to run the updater on"
     required: false
     default: "main"
   python-version:
-    description: "The version of Python to install"
+    description: "Python version for the updater"
     required: false
     default: "3.10"
   poetry-version:
-    description: "The version of Poetry to install"
+    description: "Poetry version for the updater"
     required: false
     default: "1.1.12"
 runs:
@@ -36,7 +36,11 @@ runs:
       run: ${{ github.action_path }}/main.py
       shell: bash
 
+    - name: Check if any changes were made
+      uses: UnicornGlobal/has-changes-action@v1.0.11
+
     - name: Create PR with updates
+      if: steps.changes.outputs.changed == 1
       uses: peter-evans/create-pull-request@v3
       with:
         commit-message: Update Python packages
