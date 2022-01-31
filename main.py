@@ -4,20 +4,22 @@ from pathlib import Path
 
 import shpyx
 
+
 POETRY_CONFIG_FILE_NAME = "pyproject.toml"
 
 
 def main():
     for root, dirs, files in os.walk(".", topdown=False):
         for name in files:
+            # Skip non Poetry configuration files.
             if name != POETRY_CONFIG_FILE_NAME:
                 continue
 
-            # Get the contents of the existing poetry configuration file.
+            # Get the contents of the  configuration file.
             file_path = Path(root).joinpath(name)
             file_contents = open(file_path).read()
 
-            # Verify that there is a poetry section
+            # Skip if there is no poetry section.
             if "[tool.poetry]" not in file_contents:
                 continue
 
@@ -49,7 +51,7 @@ def main():
             open(file_path, "w").write(file_contents)
 
             # Finally, regenerate the lock file again, with the new package versions.
-            shpyx.run("poetry update --lock", log_output=True, exec_dir=root)
+            shpyx.run("poetry update --lock", exec_dir=root)
 
 
 if __name__ == "__main__":

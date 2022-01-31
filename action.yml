@@ -1,4 +1,4 @@
-name: "Python Poetry automatic updates"
+name: "Update Python Poetry packages"
 author: "@Apakottur"
 description: "Create a PR that updates Python packages to latest possible versions, based on Poetry configuration files"
 branding:
@@ -6,7 +6,7 @@ branding:
   color: purple
 inputs:
   base-branch:
-    description: "Base branch, to run the updater on"
+    description: "Git branch on which the updater is run"
     required: false
     default: "main"
   python-version:
@@ -21,6 +21,8 @@ runs:
   using: "composite"
   steps:
     - uses: actions/checkout@v2
+      with:
+        ref: ${{ inputs.base-branch }}
 
     - name: Setup Python
       uses: actions/setup-python@v2
@@ -35,7 +37,7 @@ runs:
       run: pip install shpyx
       shell: bash
 
-    - name: Update packages
+    - name: Update Python Poetry packages
       run: ${{ github.action_path }}/main.py
       shell: bash
 
@@ -43,7 +45,7 @@ runs:
       id: changes
       uses: UnicornGlobal/has-changes-action@v1.0.11
 
-    - name: Create PR with updates
+    - name: Create a PR with the updates
       if: steps.changes.outputs.changed == 1
       uses: peter-evans/create-pull-request@v3
       with:
