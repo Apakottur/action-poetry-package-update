@@ -2,6 +2,10 @@ name: "Python Poetry Action"
 author: "@Apakottur"
 description: "Create a PR that updates packages to latest possible versions, based on Poetry configuration files"
 inputs:
+  base-branch:
+    description: "The base branch to check"
+    required: false
+    default: "main"
   python-version:
     description: "The version of Python to install"
     required: false
@@ -36,4 +40,4 @@ runs:
         branch-suffix: timestamp
         delete-branch: true
         title: Update Python packages
-        base: main
+        base: ${{ inputs.base-branch }}
