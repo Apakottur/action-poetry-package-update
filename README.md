@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: Apakottur/action-poetry-package-update@v0.0.1
         with:
-          base-branch: master
+          base-branch: main # Can also be `master`, for example.
 ```
 
 This workflow can be triggered manually at any time, creating a PR which bumps all Python packages in poetry
