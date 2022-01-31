@@ -17,6 +17,10 @@ def main():
             file_path = Path(root).joinpath(name)
             file_contents = open(file_path).read()
 
+            # Verify that there is a poetry section
+            if "[tool.poetry]" not in file_contents:
+                continue
+
             # Update the lock file, creating it if needed.
             shpyx.run("poetry update --lock", log_output=True, exec_dir=root)
 
