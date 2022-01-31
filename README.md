@@ -22,7 +22,7 @@ jobs:
   updater:
     runs-on: ubuntu-latest
     steps:
-      - uses: Apakottur/action-poetry-package-update@v0.0.1
+      - uses: Apakottur/action-poetry-package-update@v1
         with:
           base-branch: main # Can also be `master`, for example.
 ```
