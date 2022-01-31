@@ -25,7 +25,7 @@ runs:
       shell: bash
 
     - name: Update packages
-      run: ./main.py
+      run: ${{ github.action_path }}/main.py
       shell: bash
 
     - name: Create PR with updates
