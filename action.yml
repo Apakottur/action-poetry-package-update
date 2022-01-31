@@ -1,0 +1,38 @@
+name: "Python Poetry Action"
+author: "@Apakottur"
+description: "Create a PR that updates packages to latest possible versions, based on Poetry configuration files"
+inputs:
+  python-version:
+    description: "The version of Python to install"
+    required: false
+    default: "3.10"
+  poetry-version:
+    description: "The version of Poetry to install"
+    required: false
+    default: "1.1.12"
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install Poetry
+      run: pip install poetry==${{ inputs.poetry-version }}
+      shell: bash
+
+    - name: Update packages
+      run: ./main.py
+      shell: bash
+
+    - name: Create PR with updates
+      uses: peter-evans/create-pull-request@v3
+      with:
+        commit-message: Update Python packages
+        branch: automated/package-updates
+        branch-suffix: timestamp
+        delete-branch: true
+        title: Update Python packages
