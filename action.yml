@@ -28,6 +28,10 @@ runs:
       run: pip install poetry==${{ inputs.poetry-version }}
       shell: bash
 
+    - name: Install Shpyx
+      run: pip install shpyx
+      shell: bash
+
     - name: Update packages
       run: ${{ github.action_path }}/main.py
       shell: bash

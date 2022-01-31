@@ -1,7 +1,11 @@
 #! /usr/bin/env python
+import os
+
+import shpyx
+
 
 def main():
-    print("Success")
+    print(os.listdir())
     with open("test.txt", "w") as f:
         f.write("blabla")
 
