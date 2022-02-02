@@ -29,6 +29,10 @@ def main():
             # Get all the outdated packages.
             results = shpyx.run("poetry show -o --no-ansi", exec_dir=root)
 
+            if results.stdout == "":
+                # Nothing to update.
+                continue
+
             # Update the file contents, for each outdated package.
             for result in results.stdout.strip().split("\n"):
                 # Remove the "(!)" decoration used to mark packages as non installed.
@@ -52,6 +56,15 @@ def main():
 
             # Finally, regenerate the lock file again, with the new package versions.
             shpyx.run("poetry update --lock", exec_dir=root)
+
+        # Check whether any changes have been made, and output the result for other jobs in the GitHub Action.
+        result = shpyx.run("git status --porcelain", exec_dir=".")
+        if result.stdout == "":
+            # No changes.
+            print("::set-output name=changed::0")
+        else:
+            # Changed found.
+            print("::set-output name=changed::1")
 
 
 if __name__ == "__main__":
