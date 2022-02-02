@@ -5,10 +5,6 @@ branding:
   icon: chevrons-up
   color: purple
 inputs:
-  base-branch:
-    description: "Git branch on which the updater is run"
-    required: false
-    default: "main"
   python-version:
     description: "Python version for the updater"
     required: false
@@ -17,6 +13,14 @@ inputs:
     description: "Poetry version for the updater"
     required: false
     default: "1.1.12"
+  base-branch:
+    description: "Git branch on which the updater is run"
+    required: false
+    default: "main"
+  pr-body:
+    description: "The body of the pull request"
+    required: false
+    default: "Automated changes by [update-python-poetry-packages](https://github.com/Apakottur/action-poetry-package-update) GitHub action"
 runs:
   using: "composite"
   steps:
@@ -54,4 +58,5 @@ runs:
         branch-suffix: timestamp
         delete-branch: true
         title: Update Python packages
+        body: ${{ inputs.pr-body }}
         base: ${{ inputs.base-branch }}

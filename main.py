@@ -4,7 +4,6 @@ from pathlib import Path
 
 import shpyx
 
-
 POETRY_CONFIG_FILE_NAME = "pyproject.toml"
 
 
@@ -18,6 +17,7 @@ def main():
             # Get the contents of the  configuration file.
             file_path = Path(root).joinpath(name)
             file_contents = open(file_path).read()
+            file_lines = file_contents.split("\n")
 
             # Skip if there is no poetry section.
             if "[tool.poetry]" not in file_contents:
@@ -27,7 +27,7 @@ def main():
             shpyx.run("poetry update --lock", exec_dir=root)
 
             # Get all the outdated packages.
-            results = shpyx.run("poetry show -o --no-ansi", log_output=True, exec_dir=root)
+            results = shpyx.run("poetry show -o --no-ansi", exec_dir=root)
 
             # Update the file contents, for each outdated package.
             for result in results.stdout.strip().split("\n"):
@@ -37,18 +37,18 @@ def main():
                 # Get the package details.
                 package_name, installed_version, new_version = result.split()[:3]
 
-                # Replace the package version, supporting both single and double quotes.
-                file_contents = file_contents.replace(
-                    f"{package_name} = '{installed_version}'",
-                    f"{package_name} = '{new_version}'",
-                )
-                file_contents = file_contents.replace(
-                    f'{package_name} = "{installed_version}"',
-                    f'{package_name} = "{new_version}"',
-                )
+                # Update the package version in the file.
+                new_file_lines = []
+                for line in file_lines:
+                    if line.startswith(f"{package_name} = "):
+                        new_file_lines.append(line.replace(installed_version, new_version))
+                    else:
+                        new_file_lines.append(line)
+
+                file_lines = new_file_lines
 
             # Write the updated configuration file.
-            open(file_path, "w").write(file_contents)
+            open(file_path, "w").write("\n".join(file_lines))
 
             # Finally, regenerate the lock file again, with the new package versions.
             shpyx.run("poetry update --lock", exec_dir=root)

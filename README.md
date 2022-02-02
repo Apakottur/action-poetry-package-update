@@ -39,11 +39,12 @@ The workflow can be triggered manually and will also run automatically once a we
 
 All inputs are **optional**. If not set, sensible defaults will be used.
 
-| Name             | Description                            | Default               |
-|------------------|----------------------------------------|-----------------------|
-| `base-branch`    | Base branch for the updater to run on. | Defaults to `main`.   |
-| `python-version` | Python version.                        | Defaults to `3.10`.   |
-| `poetry-version` | Poetry version.                        | Defaults to `1.1.12`. |
+| Name             | Description                            | Default                                                                                                                          |
+|------------------|----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
+| `python-version` | Python version.                        | `3.10`.                                                                                                                          |
+| `poetry-version` | Poetry version.                        | `1.1.12`.                                                                                                                        |
+| `base-branch`    | Base branch for the updater to run on. | `main`.                                                                                                                          |
+| `pr-body`        | The body of the pull request.          | `Automated changes by [update-python-poetry-packages](https://github.com/Apakottur/action-poetry-package-update) GitHub action`. |
 
 
 
@@ -54,3 +55,9 @@ None
 ## License
 
 [MIT](LICENSE)
+
+## TODO
+1. Add `paths` input to accept only specific paths.
+2. Add `include_fixed` input to configure whether fixed packages should be updated.
+3. Add unit tests.
+4. Add further motivation and examples in the README
