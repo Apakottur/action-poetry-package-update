@@ -106,7 +106,7 @@ To release a new version:
 ```shell
 git tag -f -a -m "Update Python Poetry packages v1.0.x" v1.0.x
 git tag -f -a -m "Update Python Poetry packages v1.0.x" v1
-git push -f --tags
+git push -f origin v1.0.x v1
 ```
 
 4. Create and publish a release from the new tag.
