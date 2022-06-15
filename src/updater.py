@@ -59,6 +59,8 @@ def _run_updater_in_path(path: str) -> None:
                         # The section is not found in this file.
                         continue
 
+                    print(f"Updating {package_name}: {installed_version} -> {new_version}")
+
                     # Replace the old version of the package with the new one.
                     if isinstance(package_details, str):
                         poetry_section[section][package_name] = new_version
