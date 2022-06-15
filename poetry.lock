@@ -125,8 +125,8 @@ python-versions = ">=3.6,<4.0"
 
 [metadata]
 lock-version = "1.1"
-python-versions = "3.10" # Any version of Python 3.10
-content-hash = "234d4d598e146f6d622f8ad89a0e7061079035e817e48d63e8f2fe59a391b478"
+python-versions = "^3.10" # Any version of Python 3.10
+content-hash = "b869eee4cdeba8420d080fd02650c8e205458b33f4f3bd9c24d8a527516ff24b"
 
 [metadata.files]
 atomicwrites = [
