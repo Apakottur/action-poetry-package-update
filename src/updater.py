@@ -41,7 +41,7 @@ def _run_updater_in_path(path: str) -> None:
             # Get all the outdated packages.
             results = shpyx.run("poetry show -o --no-ansi", exec_dir=root)
 
-            print(f"Check results:{results}")
+            print(f"Check results: {results}")
 
             if results.stdout == "":
                 # Nothing to update.
