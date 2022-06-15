@@ -12,7 +12,7 @@ inputs:
   poetry-version:
     description: "Poetry version for the updater"
     required: false
-    default: "1.1.12"
+    default: "1.1.13"
   base-branch:
     description: "Git branch on which the updater is run"
     required: false
@@ -24,12 +24,12 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref: ${{ inputs.base-branch }}
 
     - name: Setup Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ inputs.python-version }}
 
@@ -37,17 +37,21 @@ runs:
       run: pip install poetry==${{ inputs.poetry-version }}
       shell: bash
 
-    - name: Install Shpyx
-      run: pip install shpyx
+    - name: Install Python dependencies
+      run: poetry install --no-dev
       shell: bash
 
     - name: Update Python Poetry packages
-      id: update-packages
       run: ${{ github.action_path }}/main.py
       shell: bash
 
+    - name: Check if there are changes
+      id: changes
+      run: echo "::set-output name=changed::$(git status --porcelain | wc -l)"
+      shell: bash
+
     - name: Create a PR with the updates
-      if: steps.update-packages.outputs.changed == 1
+      if: steps.changes.outputs.changed > 0
       uses: peter-evans/create-pull-request@v3
       with:
         commit-message: Update Python packages
