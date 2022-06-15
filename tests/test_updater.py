@@ -144,3 +144,31 @@ def test_no_changes():
         shpyx = "0.0.14"
         """,
     )
+
+
+def test_casing():
+    """Verify that lower/upper case in package names is preserved"""
+    _run_updater(
+        """
+        [tool.poetry]
+        name = "test"
+        version = "1.0.0"
+        description = ""
+        authors = []
+
+        [tool.poetry.dependencies]
+        python = "3.10"
+        sHpYx = "0.0.13"
+        """,
+        """
+        [tool.poetry]
+        name = "test"
+        version = "1.0.0"
+        description = ""
+        authors = []
+
+        [tool.poetry.dependencies]
+        python = "3.10"
+        sHpYx = "0.0.14"
+        """,
+    )

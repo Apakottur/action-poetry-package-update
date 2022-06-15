@@ -41,8 +41,6 @@ def _run_updater_in_path(path: str) -> None:
             # Get all the outdated packages.
             results = shpyx.run("poetry show -o --no-ansi", exec_dir=root)
 
-            print(f"Check results: {results}")
-
             if results.stdout == "":
                 # Nothing to update.
                 continue
@@ -58,18 +56,22 @@ def _run_updater_in_path(path: str) -> None:
                 # Update the package version in the file.
                 for section in ("dependencies", "dev-dependencies"):
                     try:
-                        package_details = poetry_section[section][package_name]
-                    except tomlkit.exceptions.NonExistentKey:
-                        # The section is not found in this file.
+                        original_package_name, package_details = next(
+                            (name, details)
+                            for name, details in poetry_section[section].items()
+                            if name.lower() == package_name
+                        )
+                    except (StopIteration, tomlkit.exceptions.NonExistentKey):
+                        # Either the section is missing or the package is not in this section.
                         continue
 
                     print(f"Updating {package_name}: {installed_version} -> {new_version}")
 
                     # Replace the old version of the package with the new one.
                     if isinstance(package_details, str):
-                        poetry_section[section][package_name] = new_version
+                        poetry_section[section][original_package_name] = new_version
                     else:
-                        poetry_section[section][package_name]["version"] = new_version
+                        poetry_section[section][original_package_name]["version"] = new_version
 
             # Write the updated configuration file.
             open(file_path, "w").write(parsed_contents.as_string())

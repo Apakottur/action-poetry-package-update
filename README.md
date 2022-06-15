@@ -94,3 +94,25 @@ None
 ## License
 
 [MIT](LICENSE)
+
+## Releasing a new version
+
+To release a new version:
+
+1. Commit all changes to `main`.
+2. Test the `main` branch.
+3. Create and push new tags:
+
+```shell
+git tag -f -a -m "Update Python Poetry packages v1.0.x" v1.0.x
+git tag -f -a -m "Update Python Poetry packages v1.0.x" v1
+git push -f --tags
+```
+
+4. Create and publish a release from the new tag.
+
+## TODO
+
+1. Run `mypy` in CI
+2. Add support for not updating specific packages
+3. Add input argument to specify paths (with the default checking the whole repo)
