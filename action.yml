@@ -37,17 +37,21 @@ runs:
       run: pip install poetry==${{ inputs.poetry-version }}
       shell: bash
 
-    - name: Install Shpyx
-      run: pip install shpyx
+    - name: Install Python dependencies
+      run: pip install shpyx tomlkit
       shell: bash
 
     - name: Update Python Poetry packages
-      id: update-packages
       run: ${{ github.action_path }}/main.py
       shell: bash
 
+    - name: Check if there are changes
+      id: changes
+      run: echo "::set-output name=changed::$(git status --porcelain | wc -l)"
+      shell: bash
+
     - name: Create a PR with the updates
-      if: steps.update-packages.outputs.changed == 1
+      if: steps.changes.outputs.changed > 0
       uses: peter-evans/create-pull-request@v3
       with:
         commit-message: Update Python packages
