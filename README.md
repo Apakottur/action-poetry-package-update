@@ -42,7 +42,7 @@ All inputs are **optional**. If not set, sensible defaults will be used.
 | Name             | Description                            | Default                                                                                                                          |
 |------------------|----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
 | `python-version` | Python version.                        | `3.10`.                                                                                                                          |
-| `poetry-version` | Poetry version.                        | `1.1.12`.                                                                                                                        |
+| `poetry-version` | Poetry version.                        | `1.1.13`.                                                                                                                        |
 | `base-branch`    | Base branch for the updater to run on. | `main`.                                                                                                                          |
 | `pr-body`        | The body of the pull request.          | `Automated changes by [update-python-poetry-packages](https://github.com/Apakottur/action-poetry-package-update) GitHub action`. |
 
