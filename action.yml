@@ -38,7 +38,7 @@ runs:
       shell: bash
 
     - name: Install Python dependencies
-      run: pip install shpyx tomlkit
+      run: poetry install --no-dev
       shell: bash
 
     - name: Update Python Poetry packages

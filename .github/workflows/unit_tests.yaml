@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  linters:
+  unit-tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,6 +19,14 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: "3.10"
+
+      - name: Install Poetry
+        run: pip install poetry==${{ inputs.poetry-version }}
+        shell: bash
+
+      - name: Install Python dependencies
+        run: poetry install
+        shell: bash
 
       - name: Run unit tests
         run: pytest -c tests/pytest.ini
