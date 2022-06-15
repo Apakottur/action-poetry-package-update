@@ -22,11 +22,9 @@ jobs:
 
       - name: Install Poetry
         run: pip install poetry
-        shell: bash
 
       - name: Install Python dependencies
         run: poetry install
-        shell: bash
 
       - name: Run unit tests
-        run: pytest -c tests/pytest.ini
+        run: poetry run pytest -c tests/pytest.ini
