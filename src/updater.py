@@ -26,6 +26,8 @@ def _run_updater_in_path(path: str) -> None:
             file_contents = open(file_path).read()
             parsed_contents = tomlkit.parse(file_contents)
 
+            print(f"TOML contents of {file_path}: {parsed_contents}")
+
             # Get the poetry configuration.
             try:
                 poetry_section = parsed_contents["tool"]["poetry"]
@@ -38,6 +40,8 @@ def _run_updater_in_path(path: str) -> None:
 
             # Get all the outdated packages.
             results = shpyx.run("poetry show -o --no-ansi", exec_dir=root)
+
+            print(f"Check results:{results}")
 
             if results.stdout == "":
                 # Nothing to update.
