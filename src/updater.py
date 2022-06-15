@@ -6,10 +6,14 @@ import shpyx
 import tomlkit
 import tomlkit.exceptions
 
+"""Poetry configuration file name"""
 POETRY_CONFIG_FILE_NAME = "pyproject.toml"
 
 
-def _run_updater_in_path(path: str):
+def _run_updater_in_path(path: str) -> None:
+    """
+    Run the updater in the specified path.
+    """
     # Iterate over all files in the directory
     for root, _dirs, files in os.walk(path, topdown=False):
         for name in files:
@@ -52,9 +56,10 @@ def _run_updater_in_path(path: str):
                     try:
                         package_details = poetry_section[section][package_name]
                     except tomlkit.exceptions.NonExistentKey:
-                        # Skip if there is no poetry section.
+                        # The section is not found in this file.
                         continue
 
+                    # Replace the old version of the package with the new one.
                     if isinstance(package_details, str):
                         poetry_section[section][package_name] = new_version
                     else:

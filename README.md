@@ -1,13 +1,53 @@
 # Update Python Poetry packages
 
-A Github action that creates a pull request that updates the Python packages in
+A GitHub action that creates a pull request that updates the Python packages in
 your [Poetry](https://python-poetry.org/) configuration files to the latest possible versions.
 
 The action will:
 
-1. Find all poetry configuration files in the repository.
+1. Find all Poetry configuration files in the repository.
 2. Bump all Python packages to their latest versions.
 3. Create a pull request with the changes.
+
+### Motivation
+
+It is considered best practice to pin package versions in any production project, to ensure consistent applications.
+
+For example, a Poetry configuration file might look like this:
+
+```toml
+[tool.poetry]
+name = "package"
+version = "1.0.0"
+description = ""
+authors = []
+
+[tool.poetry.dependencies]
+python = "^3.10"
+shpyx = "0.0.13"
+sqlalchemy = { extras = [
+  "postgresql",
+  "postgresql_asyncpg"
+], version = "1.4.36" }
+
+[tool.poetry.dev-dependencies]
+mypy = "0.950"
+```
+
+All the packages are fixed to a specific version, which guarantees deterministic behavior.
+At some point we might want to check if some of the packages that we're using have newer versions. We can do that by
+running `poetry show -o` which will output something like:
+
+```text
+mypy       0.950  0.961  Optional static typing for Python
+shpyx      0.0.13 0.0.14 Configurable shell command execution in Python
+sqlalchemy 1.4.36 1.4.37 Database Abstraction Library
+```
+
+We can then update the package versions in our `toml` file and run `poetry lock` or `poetry update` to regenerate the
+lock file.
+
+This action provides a simple API to do all of that.
 
 ## Usage
 
