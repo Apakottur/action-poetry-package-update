@@ -36,7 +36,7 @@ mypy = "0.950"
 
 All the packages are fixed to a specific version, which guarantees deterministic behavior.
 At some point we might want to check if some of the packages that we're using have newer versions. We can do that by
-running `poetry show -o` which will output something like:
+running `poetry show -o` which will output something like this:
 
 ```text
 mypy       0.950  0.961  Optional static typing for Python
@@ -47,7 +47,7 @@ sqlalchemy 1.4.36 1.4.37 Database Abstraction Library
 We can then update the package versions in our `toml` file and run `poetry lock` or `poetry update` to regenerate the
 lock file.
 
-This action provides a simple API to do all of that.
+This action automates this whole process.
 
 ## Usage
 
@@ -68,7 +68,7 @@ jobs:
   update-packages:
     runs-on: ubuntu-latest
     steps:
-      - uses: Apakottur/action-poetry-package-update@v1
+      - uses: Apakottur/action-poetry-package-update@v1 # Can also be `@main`
         with:
           base-branch: main # Can also be `master`, for example.
 ```
