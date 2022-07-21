@@ -10,11 +10,16 @@ from updater import POETRY_CONFIG_FILE_NAME, run_updater
 @dataclass
 class Project:
     """
-    Poetry TOML file before/after contents.
+    Poetry project configuration.
     """
 
+    # The contents of the TOML file before the update.
     before: str
+
+    # The contents of the TOML file after the update.
     after: str
+
+    # The relative path to the project file.
     path: str = ""
 
 
@@ -58,19 +63,20 @@ def _run_updater(projects: list[Project], *, add_tool_poetry: bool = True, tmp_d
 
     def run_in_tmp_directory():
         # Create the files
-        for project in projects:
-            file_path = Path(tmp_dir) / project.path / POETRY_CONFIG_FILE_NAME
+        for p in projects:
+            file_path = Path(tmp_dir) / p.path / POETRY_CONFIG_FILE_NAME
             Path.mkdir(file_path.parent, exist_ok=True)
-            open(file_path, "w").write(project.before)
+            open(file_path, "w").write(p.before)
 
         # Run the updater.
         run_updater([tmp_dir])
 
         # Compare the files.
-        for project in projects:
-            file_path = Path(tmp_dir) / project.path / POETRY_CONFIG_FILE_NAME
-            assert project.after == open(file_path).read()
+        for p in projects:
+            file_path = Path(tmp_dir) / p.path / POETRY_CONFIG_FILE_NAME
+            assert p.after == open(file_path).read()
 
+    # Create a temporary directory or use an existing run and then run the updater.
     if tmp_dir:
         run_in_tmp_directory()
     else:
@@ -189,13 +195,13 @@ def test_casing():
 
 
 def test_path_dependency_run_order(mocker: MockerFixture):
-    """Verify that path dependencies are updated first"""
+    """Verify that the update order is correct when using path dependencies"""
     # Track calls to "shpyx.run".
     shpyx_run_spy = mocker.spy(updater.shpyx, "run")
 
     tmp_dir = tempfile.TemporaryDirectory()
 
-    # Make sure the results of `os.walk` are not in the correct update order.
+    # Make sure the results of `os.walk` are NOT in the correct update order.
     def _os_walk(path: str, *args, **kwargs):
         assert (path, args, kwargs) == (tmp_dir.name, (), {})
         return [
