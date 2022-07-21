@@ -40,7 +40,7 @@ def _run_updater_in_path(path: str) -> None:
                 continue
 
             # Build the mapping from projects to their path dependencies.
-            file_path_to_deps[file_path] = []
+            file_path_to_deps[file_path.resolve()] = []
             for section in SECTIONS:
                 try:
                     poetry_section = poetry_section[section]
@@ -49,12 +49,17 @@ def _run_updater_in_path(path: str) -> None:
 
                 for details in poetry_section.values():
                     if "path" in details:
-                        file_path_to_deps[file_path].append((Path(root) / details["path"] / name).resolve())
+                        file_path_to_deps[file_path.resolve()].append((Path(root) / details["path"] / name).resolve())
 
     # Order the projects based on interdependencies, where dependencies go first.
-    file_paths_in_order = sorted(
-        file_path_to_deps, key=functools.cmp_to_key(lambda x, y: 1 if y in file_path_to_deps[x] else -1)
-    )
+    def cmp(x, y):
+        if x in file_path_to_deps[y]:
+            # X is a dependency of Y, mark it as smaller, so it appears first in the list.
+            return -1
+        else:
+            return 1
+
+    file_paths_in_order = sorted(file_path_to_deps, key=functools.cmp_to_key(cmp))
 
     # Second iteration - run updates in order.
     for file_path in file_paths_in_order:
