@@ -1,4 +1,3 @@
-import os
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
@@ -19,7 +18,7 @@ class Project:
     path: str = ""
 
 
-def _run_updater(projects: list[Project], *, add_tool_poetry: bool = True, tmp_dir: str = None) -> None:
+def _run_updater(projects: list[Project], *, add_tool_poetry: bool = True, tmp_dir: str | None = None) -> None:
     """
     Run the updater and verify the result.
 
@@ -61,7 +60,7 @@ def _run_updater(projects: list[Project], *, add_tool_poetry: bool = True, tmp_d
         # Create the files
         for project in projects:
             file_path = Path(tmp_dir) / project.path / POETRY_CONFIG_FILE_NAME
-            os.mkdir(file_path.parent.resolve())
+            Path.mkdir(file_path.parent, exist_ok=True)
             open(file_path, "w").write(project.before)
 
         # Run the updater.
