@@ -116,4 +116,3 @@ git push -f origin v1.0.x v1
 1. Run `mypy` in CI
 2. Add support for not updating specific packages
 3. Add input argument to specify paths (with the default checking the whole repo)
-4. Bug: If A is a path dependency of B then B's lock file must be generated AFTER A is updated.

@@ -15,7 +15,8 @@ def _run_updater_in_path(path: str) -> None:
     Run the updater in the specified path.
     """
     # Iterate over all files in the directory
-    for root, _dirs, files in os.walk(path, topdown=False):
+    for root, _dirs, files in os.walk(path):
+        print(root, _dirs, files)
         for name in files:
             # Skip non Poetry configuration files.
             if name != POETRY_CONFIG_FILE_NAME:
