@@ -12,7 +12,7 @@ inputs:
   poetry-version:
     description: "Poetry version for the updater"
     required: false
-    default: "1.1.13"
+    default: "1.1.14"
   base-branch:
     description: "Git branch on which the updater is run"
     required: false
