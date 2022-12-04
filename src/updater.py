@@ -94,7 +94,7 @@ def _run_updater_in_path(path: str) -> None:
                     original_package_name, package_details = next(
                         (name, details)
                         for name, details in poetry_section[section].items()
-                        if name.lower() == package_name
+                        if name.lower() == package_name.lower()
                     )
                 except (StopIteration, tomlkit.exceptions.NonExistentKey):
                     # Either the section is missing or the package is not in this section.
