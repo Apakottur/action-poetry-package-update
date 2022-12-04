@@ -97,7 +97,7 @@ def test_poetry_deps():
                 """
                 [tool.poetry.dependencies]
                 python = "^3.10"
-                shpyx = "0.0.14"
+                shpyx = "0.0.22"
                 """,
             )
         ]
@@ -121,7 +121,7 @@ def test_poetry_dev_deps():
                 python = "^3.10"
 
                 [tool.poetry.dev-dependencies]
-                shpyx = "0.0.14"
+                shpyx = "0.0.22"
                 """,
             )
         ]
@@ -147,7 +147,7 @@ def test_multiline_deps():
                 sqlalchemy = { extras = [
                   "postgresql",
                   "postgresql_asyncpg"
-                ], version = "1.4.39" }
+                ], version = "1.4.44" }
                 """,
             )
         ]
@@ -162,12 +162,12 @@ def test_no_changes():
                 """
                 [tool.poetry.dependencies]
                 python = "^3.10"
-                shpyx = "0.0.14"
+                shpyx = "0.0.22"
                 """,
                 """
                 [tool.poetry.dependencies]
                 python = "^3.10"
-                shpyx = "0.0.14"
+                shpyx = "0.0.22"
                 """,
             )
         ]
@@ -187,7 +187,7 @@ def test_casing():
                 """
                 [tool.poetry.dependencies]
                 python = "^3.10"
-                sHpYx = "0.0.14"
+                sHpYx = "0.0.22"
                 """,
             )
         ]
@@ -252,7 +252,7 @@ def test_path_dependency_run_order(mocker: MockerFixture):
                 """
                 [tool.poetry.dependencies]
                 python = "^3.10"
-                shpyx = "0.0.14"
+                shpyx = "0.0.22"
                 """,
                 "inner_2",
             ),
