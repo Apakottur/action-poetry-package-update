@@ -4,7 +4,7 @@ import argparse
 import updater
 
 
-def _parse_args():
+def _parse_args() -> None:
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     parser.add_argument("--paths", help="List of paths to run the updater in.", nargs="+", default=["."])
@@ -12,7 +12,7 @@ def _parse_args():
     return parser.parse_args()
 
 
-def main():
+def main() -> None:
     args = _parse_args()
     updater.run_updater(args.paths)
 

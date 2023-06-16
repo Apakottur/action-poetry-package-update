@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 import functools
 import os
 from pathlib import Path
@@ -52,7 +51,7 @@ def _run_updater_in_path(path: str) -> None:
                         file_path_to_deps[file_path.resolve()].append((Path(root) / details["path"] / name).resolve())
 
     # Order the projects based on interdependencies, where dependencies go first.
-    def cmp(x, y):
+    def cmp(x: Path, y: Path) -> None:
         if x in file_path_to_deps[y]:
             # X is a dependency of Y, mark it as smaller, so it appears first in the list.
             return -1
@@ -76,17 +75,17 @@ def _run_updater_in_path(path: str) -> None:
         # Get all the outdated packages.
         results = shpyx.run("poetry show -o --no-ansi", exec_dir=file_path.parent)
 
-        if results.stdout == "":
+        if not results.stdout:
             # Nothing to update.
             continue
 
         # Update the file contents, for each outdated package.
         for result in results.stdout.strip().split("\n"):
             # Remove the "(!)" decoration used to mark packages as non installed.
-            result = result.replace(" (!) ", " ")
+            formatted_result = result.replace(" (!) ", " ")
 
             # Get the package details.
-            package_name, installed_version, new_version = result.split()[:3]
+            package_name, installed_version, new_version = formatted_result.split()[:3]
 
             # Update the package version in the file.
             for section in SECTIONS:
@@ -115,6 +114,6 @@ def _run_updater_in_path(path: str) -> None:
         shpyx.run("poetry update --lock", exec_dir=file_path.parent)
 
 
-def run_updater(paths: list[str]):
+def run_updater(paths: list[str]) -> None:
     for path in paths:
         _run_updater_in_path(path)
