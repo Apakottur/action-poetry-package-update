@@ -92,4 +92,4 @@ repos:
     rev: "v2.7"
     hooks:
       - id: vulture
-        args: ["shpyx", "tests"]
+        args: ["src", "tests"]

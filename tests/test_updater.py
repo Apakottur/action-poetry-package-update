@@ -1,6 +1,7 @@
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 import updater
 from pytest_mock import MockerFixture
@@ -61,7 +62,7 @@ def _run_updater(projects: list[Project], *, add_tool_poetry: bool = True, tmp_d
         project.before = "\n".join(line.strip() for line in project.before.split("\n"))
         project.after = "\n".join(line.strip() for line in project.after.split("\n"))
 
-    def run_in_tmp_directory():
+    def run_in_tmp_directory() -> None:
         # Create the files
         for p in projects:
             file_path = Path(tmp_dir) / p.path / POETRY_CONFIG_FILE_NAME
@@ -84,7 +85,7 @@ def _run_updater(projects: list[Project], *, add_tool_poetry: bool = True, tmp_d
             run_in_tmp_directory()
 
 
-def test_poetry_deps():
+def test_poetry_deps() -> None:
     """A package under `dependencies` is out of date"""
     _run_updater(
         [
@@ -104,7 +105,7 @@ def test_poetry_deps():
     )
 
 
-def test_poetry_dev_deps():
+def test_poetry_dev_deps() -> None:
     """A package under `dev-dependencies` is out of date"""
     _run_updater(
         [
@@ -128,7 +129,7 @@ def test_poetry_dev_deps():
     )
 
 
-def test_multiline_deps():
+def test_multiline_deps() -> None:
     """A package with a multi-line configuration is out of date"""
     _run_updater(
         [
@@ -154,7 +155,7 @@ def test_multiline_deps():
     )
 
 
-def test_no_changes():
+def test_no_changes() -> None:
     """Everything is up to date"""
     _run_updater(
         [
@@ -174,7 +175,7 @@ def test_no_changes():
     )
 
 
-def test_casing():
+def test_casing() -> None:
     """Verify that lower/upper case in package names is preserved"""
     _run_updater(
         [
@@ -194,7 +195,7 @@ def test_casing():
     )
 
 
-def test_path_dependency_run_order(mocker: MockerFixture):
+def test_path_dependency_run_order(mocker: MockerFixture) -> None:
     """Verify that the update order is correct when using path dependencies"""
     # Track calls to "shpyx.run".
     shpyx_run_spy = mocker.spy(updater.shpyx, "run")
@@ -202,7 +203,7 @@ def test_path_dependency_run_order(mocker: MockerFixture):
     tmp_dir = tempfile.TemporaryDirectory()
 
     # Make sure the results of `os.walk` are NOT in the correct update order.
-    def _os_walk(path: str, *args, **kwargs):
+    def _os_walk(path: str, *args: Any, **kwargs: Any) -> None:
         assert (path, args, kwargs) == (tmp_dir.name, (), {})
         return [
             (tmp_dir, ["outer", "inner_1", "inner_2"], []),

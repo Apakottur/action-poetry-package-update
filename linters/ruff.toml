@@ -56,6 +56,8 @@ ignore = [
     "SIM102", # Use a single `if` statement instead of nested `if` statements
     "SIM105", # Use `contextlib.suppress()` instead of try-except-pass
     "SIM114", # Combine `if` branches using logical `or` operator
+    "SIM115", # Use context handler for opening files
+    "T201", # print found
     "TCH001", # Move application import into a type-checking block
     "TCH002", # Move third-party import into a type-checking block
     "TCH003", # Move standard library import into a type-checking block
@@ -77,7 +79,7 @@ isort = { combine-as-imports = true }
 line-length = 120
 
 # Python version.
-target-version = "py37"
+target-version = "py311"
 
 [pydocstyle]
 # Use Google-style docstrings.
