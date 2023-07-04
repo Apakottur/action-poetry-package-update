@@ -107,6 +107,7 @@ def test_poetry_deps() -> None:
 
 def test_poetry_dev_deps() -> None:
     """A package under `dev-dependencies` is out of date"""
+    # Old syntax.
     _run_updater(
         [
             Project(
@@ -122,6 +123,28 @@ def test_poetry_dev_deps() -> None:
                 python = "^3.10"
 
                 [tool.poetry.dev-dependencies]
+                shpyx = "0.0.25"
+                """,
+            )
+        ]
+    )
+
+    # New syntax.
+    _run_updater(
+        [
+            Project(
+                """
+                [tool.poetry.dependencies]
+                python = "^3.10"
+
+                [tool.poetry.group.dev.dependencies]
+                shpyx = "0.0.13"
+                """,
+                """
+                [tool.poetry.dependencies]
+                python = "^3.10"
+
+                [tool.poetry.group.dev.dependencies]
                 shpyx = "0.0.25"
                 """,
             )
@@ -148,7 +171,7 @@ def test_multiline_deps() -> None:
                 sqlalchemy = { extras = [
                   "postgresql",
                   "postgresql_asyncpg"
-                ], version = "2.0.16" }
+                ], version = "2.0.17" }
                 """,
             )
         ]
