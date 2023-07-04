@@ -10,7 +10,7 @@ import tomlkit.exceptions
 POETRY_CONFIG_FILE_NAME = "pyproject.toml"
 
 """Sections in the Poetry configuration files where dependencies reside"""
-SECTIONS = ("dependencies", "dev-dependencies")
+SECTIONS = ("dependencies", "dev-dependencies", "group.dev.dependencies", "")
 
 
 def _run_updater_in_path(path: str) -> None:
@@ -42,11 +42,13 @@ def _run_updater_in_path(path: str) -> None:
             file_path_to_deps[file_path.resolve()] = []
             for section in SECTIONS:
                 try:
-                    poetry_section = poetry_section[section]
+                    current_poetry_section = poetry_section
+                    for part in section.split("."):
+                        current_poetry_section = current_poetry_section[part]
                 except tomlkit.exceptions.NonExistentKey:
                     continue
 
-                for details in poetry_section.values():
+                for details in current_poetry_section.values():
                     if "path" in details:
                         file_path_to_deps[file_path.resolve()].append((Path(root) / details["path"] / name).resolve())
 
@@ -90,9 +92,13 @@ def _run_updater_in_path(path: str) -> None:
             # Update the package version in the file.
             for section in SECTIONS:
                 try:
+                    current_poetry_section = poetry_section
+                    for part in section.split("."):
+                        current_poetry_section = current_poetry_section[part]
+
                     original_package_name, package_details = next(
                         (name, details)
-                        for name, details in poetry_section[section].items()
+                        for name, details in current_poetry_section.items()
                         if name.lower() == package_name.lower()
                     )
                 except (StopIteration, tomlkit.exceptions.NonExistentKey):
@@ -103,9 +109,9 @@ def _run_updater_in_path(path: str) -> None:
 
                 # Replace the old version of the package with the new one.
                 if isinstance(package_details, str):
-                    poetry_section[section][original_package_name] = new_version
+                    current_poetry_section[original_package_name] = new_version
                 else:
-                    poetry_section[section][original_package_name]["version"] = new_version
+                    current_poetry_section[original_package_name]["version"] = new_version
 
         # Write the updated configuration file.
         open(file_path, "w").write(parsed_contents.as_string())
