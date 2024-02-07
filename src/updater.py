@@ -29,7 +29,7 @@ def _run_updater_in_path(path: str) -> None:
 
             # Get the contents of the configuration file.
             file_path = Path(root).joinpath(name)
-            file_contents = open(file_path).read()
+            file_contents = Path(file_path).read_text()
             parsed_contents = tomlkit.parse(file_contents)
 
             # Get the poetry configuration, skipping if there is none.
@@ -53,7 +53,7 @@ def _run_updater_in_path(path: str) -> None:
                         file_path_to_deps[file_path.resolve()].append((Path(root) / details["path"] / name).resolve())
 
     # Order the projects based on interdependencies, where dependencies go first.
-    def cmp(x: Path, y: Path) -> None:
+    def cmp(x: Path, y: Path) -> int:
         if x in file_path_to_deps[y]:
             # X is a dependency of Y, mark it as smaller, so it appears first in the list.
             return -1
@@ -65,7 +65,7 @@ def _run_updater_in_path(path: str) -> None:
     # Second iteration - run updates in order.
     for file_path in file_paths_in_order:
         # Get the contents of the configuration file.
-        file_contents = open(file_path).read()
+        file_contents = Path(file_path).read_text()
         parsed_contents = tomlkit.parse(file_contents)
         poetry_section = parsed_contents["tool"]["poetry"]
 
@@ -114,7 +114,7 @@ def _run_updater_in_path(path: str) -> None:
                     current_poetry_section[original_package_name]["version"] = new_version
 
         # Write the updated configuration file.
-        open(file_path, "w").write(parsed_contents.as_string())
+        Path(file_path).write_text(parsed_contents.as_string())
 
         # Finally, regenerate the lock file again, with the new package versions.
         shpyx.run("poetry update --lock", exec_dir=file_path.parent)

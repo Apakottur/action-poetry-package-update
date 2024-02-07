@@ -16,6 +16,7 @@ It is considered best practice to pin package versions in any production project
 For example, a Poetry configuration file might look like this:
 
 ```toml
+
 [tool.poetry]
 name = "package"
 version = "1.0.0"
@@ -51,6 +52,7 @@ This action automates this whole process.
 
 ## Usage
 
+### As a GitHub Action
 Create the following workflow:
 
 ```yml
@@ -75,6 +77,14 @@ jobs:
 
 This workflow creates a PR which bumps all Python packages in poetry configuration files to their latest versions.
 The workflow can be triggered manually and will also run automatically once a week.
+
+### As a manual script
+The Python script can be run manually:
+1. Clone the repository.
+2. From the root directory of the project where the `pyproject.toml` files are located, run the following command:
+```shell
+/path/to/action-poetry-package-update/src/main.py
+```
 
 ### Action inputs
 

@@ -62,102 +62,95 @@ def _run_updater(projects: list[Project], *, add_tool_poetry: bool = True, tmp_d
         project.before = "\n".join(line.strip() for line in project.before.split("\n"))
         project.after = "\n".join(line.strip() for line in project.after.split("\n"))
 
-    def run_in_tmp_directory() -> None:
+    def run_in_tmp_directory(_tmp_dir: str) -> None:
         # Create the files
         for p in projects:
-            file_path = Path(tmp_dir) / p.path / POETRY_CONFIG_FILE_NAME
+            file_path = Path(_tmp_dir) / p.path / POETRY_CONFIG_FILE_NAME
             Path.mkdir(file_path.parent, exist_ok=True)
-            open(file_path, "w").write(p.before)
+            Path(file_path).write_text(p.before)
 
         # Run the updater.
-        run_updater([tmp_dir])
+        run_updater([_tmp_dir])
 
         # Compare the files.
         for p in projects:
-            file_path = Path(tmp_dir) / p.path / POETRY_CONFIG_FILE_NAME
-            assert p.after == open(file_path).read()
+            file_path = Path(_tmp_dir) / p.path / POETRY_CONFIG_FILE_NAME
+            assert p.after == Path(file_path).read_text()
 
     # Create a temporary directory or use an existing run and then run the updater.
     if tmp_dir:
-        run_in_tmp_directory()
+        run_in_tmp_directory(tmp_dir)
     else:
-        with tempfile.TemporaryDirectory() as tmp_dir:
-            run_in_tmp_directory()
+        with tempfile.TemporaryDirectory() as _tmp_dir:
+            run_in_tmp_directory(_tmp_dir)
 
 
 def test_poetry_deps() -> None:
     """A package under `dependencies` is out of date"""
-    _run_updater(
-        [
-            Project(
-                """
+    _run_updater([
+        Project(
+            """
                 [tool.poetry.dependencies]
                 python = "^3.10"
                 shpyx = "0.0.13"
                 """,
-                """
+            """
                 [tool.poetry.dependencies]
                 python = "^3.10"
                 shpyx = "0.0.25"
                 """,
-            )
-        ]
-    )
+        )
+    ])
 
 
 def test_poetry_dev_deps() -> None:
     """A package under `dev-dependencies` is out of date"""
     # Old syntax.
-    _run_updater(
-        [
-            Project(
-                """
+    _run_updater([
+        Project(
+            """
                 [tool.poetry.dependencies]
                 python = "^3.10"
 
                 [tool.poetry.dev-dependencies]
                 shpyx = "0.0.13"
                 """,
-                """
+            """
                 [tool.poetry.dependencies]
                 python = "^3.10"
 
                 [tool.poetry.dev-dependencies]
                 shpyx = "0.0.25"
                 """,
-            )
-        ]
-    )
+        )
+    ])
 
     # New syntax.
-    _run_updater(
-        [
-            Project(
-                """
+    _run_updater([
+        Project(
+            """
                 [tool.poetry.dependencies]
                 python = "^3.10"
 
                 [tool.poetry.group.dev.dependencies]
                 shpyx = "0.0.13"
                 """,
-                """
+            """
                 [tool.poetry.dependencies]
                 python = "^3.10"
 
                 [tool.poetry.group.dev.dependencies]
                 shpyx = "0.0.25"
                 """,
-            )
-        ]
-    )
+        )
+    ])
 
 
 def test_multiline_deps() -> None:
     """A package with a multi-line configuration is out of date"""
-    _run_updater(
-        [
-            Project(
-                """
+    _run_updater([
+        Project(
+            """
                 [tool.poetry.dependencies]
                 python = "^3.10"
                 sqlalchemy = { extras = [
@@ -165,57 +158,52 @@ def test_multiline_deps() -> None:
                   "postgresql_asyncpg"
                 ], version = "1.4.36" }
                 """,
-                """
+            """
                 [tool.poetry.dependencies]
                 python = "^3.10"
                 sqlalchemy = { extras = [
                   "postgresql",
                   "postgresql_asyncpg"
-                ], version = "2.0.17" }
+                ], version = "2.0.25" }
                 """,
-            )
-        ]
-    )
+        )
+    ])
 
 
 def test_no_changes() -> None:
     """Everything is up to date"""
-    _run_updater(
-        [
-            Project(
-                """
+    _run_updater([
+        Project(
+            """
                 [tool.poetry.dependencies]
                 python = "^3.10"
                 shpyx = "0.0.25"
                 """,
-                """
+            """
                 [tool.poetry.dependencies]
                 python = "^3.10"
                 shpyx = "0.0.25"
                 """,
-            )
-        ]
-    )
+        )
+    ])
 
 
 def test_casing() -> None:
     """Verify that lower/upper case in package names is preserved"""
-    _run_updater(
-        [
-            Project(
-                """
+    _run_updater([
+        Project(
+            """
                 [tool.poetry.dependencies]
                 python = "^3.10"
                 sHpYx = "0.0.13"
                 """,
-                """
+            """
                 [tool.poetry.dependencies]
                 python = "^3.10"
                 sHpYx = "0.0.25"
                 """,
-            )
-        ]
-    )
+        )
+    ])
 
 
 def test_path_dependency_run_order(mocker: MockerFixture) -> None:
@@ -226,7 +214,7 @@ def test_path_dependency_run_order(mocker: MockerFixture) -> None:
     tmp_dir = tempfile.TemporaryDirectory()
 
     # Make sure the results of `os.walk` are NOT in the correct update order.
-    def _os_walk(path: str, *args: Any, **kwargs: Any) -> None:
+    def _os_walk(path: str, *args: Any, **kwargs: Any) -> list[tuple[str, list[str], list[str]]]:
         assert (path, args, kwargs) == (tmp_dir.name, (), {})
         return [
             (tmp_dir, ["outer", "inner_1", "inner_2"], []),
