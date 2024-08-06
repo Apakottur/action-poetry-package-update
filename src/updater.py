@@ -62,7 +62,11 @@ def _run_updater_in_path(path: str) -> None:
 
     file_paths_in_order = sorted(file_path_to_deps, key=functools.cmp_to_key(cmp))
 
-    # Second iteration - run updates in order.
+    # Second iteration - make sure all projects have lock files.
+    for file_path in file_paths_in_order:
+        shpyx.run("poetry lock", exec_dir=file_path.parent)
+
+    # Third iteration - run updates in order.
     for file_path in file_paths_in_order:
         # Get the contents of the configuration file.
         file_contents = Path(file_path).read_text()
@@ -70,9 +74,6 @@ def _run_updater_in_path(path: str) -> None:
         poetry_section = parsed_contents["tool"]["poetry"]
 
         print(f"TOML contents of {file_path}: {parsed_contents}")
-
-        # Update the lock file, creating it if needed.
-        shpyx.run("poetry update --lock", exec_dir=file_path.parent)
 
         # Get all the outdated packages.
         results = shpyx.run("poetry show -o --no-ansi", exec_dir=file_path.parent)

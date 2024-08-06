@@ -24,7 +24,12 @@ class Project:
     path: str = ""
 
 
-def _run_updater(projects: list[Project], *, add_tool_poetry: bool = True, tmp_dir: str | None = None) -> None:
+def _run_updater(
+    projects: list[Project],
+    *,
+    add_tool_poetry: bool = True,
+    tmp_dir: str | None = None,
+) -> None:
     """
     Run the updater and verify the result.
 
@@ -87,123 +92,135 @@ def _run_updater(projects: list[Project], *, add_tool_poetry: bool = True, tmp_d
 
 def test_poetry_deps() -> None:
     """A package under `dependencies` is out of date"""
-    _run_updater([
-        Project(
-            """
+    _run_updater(
+        [
+            Project(
+                """
                 [tool.poetry.dependencies]
-                python = "^3.10"
+                python = "~3.12"
                 shpyx = "0.0.13"
                 """,
-            """
+                """
                 [tool.poetry.dependencies]
-                python = "^3.10"
-                shpyx = "0.0.25"
+                python = "~3.12"
+                shpyx = "0.0.28"
                 """,
-        )
-    ])
+            )
+        ]
+    )
 
 
 def test_poetry_dev_deps() -> None:
     """A package under `dev-dependencies` is out of date"""
     # Old syntax.
-    _run_updater([
-        Project(
-            """
+    _run_updater(
+        [
+            Project(
+                """
                 [tool.poetry.dependencies]
-                python = "^3.10"
+                python = "~3.12"
 
                 [tool.poetry.dev-dependencies]
                 shpyx = "0.0.13"
                 """,
-            """
+                """
                 [tool.poetry.dependencies]
-                python = "^3.10"
+                python = "~3.12"
 
                 [tool.poetry.dev-dependencies]
-                shpyx = "0.0.25"
+                shpyx = "0.0.28"
                 """,
-        )
-    ])
+            )
+        ]
+    )
 
     # New syntax.
-    _run_updater([
-        Project(
-            """
+    _run_updater(
+        [
+            Project(
+                """
                 [tool.poetry.dependencies]
-                python = "^3.10"
+                python = "~3.12"
 
                 [tool.poetry.group.dev.dependencies]
                 shpyx = "0.0.13"
                 """,
-            """
+                """
                 [tool.poetry.dependencies]
-                python = "^3.10"
+                python = "~3.12"
 
                 [tool.poetry.group.dev.dependencies]
-                shpyx = "0.0.25"
+                shpyx = "0.0.28"
                 """,
-        )
-    ])
+            )
+        ]
+    )
 
 
 def test_multiline_deps() -> None:
     """A package with a multi-line configuration is out of date"""
-    _run_updater([
-        Project(
-            """
+    _run_updater(
+        [
+            Project(
+                """
                 [tool.poetry.dependencies]
-                python = "^3.10"
+                python = "~3.12"
                 sqlalchemy = { extras = [
                   "postgresql",
                   "postgresql_asyncpg"
                 ], version = "1.4.36" }
                 """,
-            """
+                """
                 [tool.poetry.dependencies]
-                python = "^3.10"
+                python = "~3.12"
                 sqlalchemy = { extras = [
                   "postgresql",
                   "postgresql_asyncpg"
-                ], version = "2.0.25" }
+                ], version = "2.0.32" }
                 """,
-        )
-    ])
+            )
+        ]
+    )
 
 
 def test_no_changes() -> None:
     """Everything is up to date"""
-    _run_updater([
-        Project(
-            """
+    _run_updater(
+        [
+            Project(
+                """
                 [tool.poetry.dependencies]
-                python = "^3.10"
-                shpyx = "0.0.25"
+                python = "~3.12"
+                shpyx = "0.0.28"
                 """,
-            """
+                """
                 [tool.poetry.dependencies]
-                python = "^3.10"
-                shpyx = "0.0.25"
+                python = "~3.12"
+                shpyx = "0.0.28"
                 """,
-        )
-    ])
+            )
+        ]
+    )
 
 
 def test_casing() -> None:
     """Verify that lower/upper case in package names is preserved"""
-    _run_updater([
-        Project(
-            """
+    _run_updater(
+        [
+            Project(
+                """
                 [tool.poetry.dependencies]
-                python = "^3.10"
+                python = "~3.12"
                 sHpYx = "0.0.13"
                 """,
-            """
+                """
                 [tool.poetry.dependencies]
-                python = "^3.10"
-                sHpYx = "0.0.25"
+                python = "~3.12"
+                sHpYx = "0.0.28"
                 """,
-        )
-    ])
+            )
+        ]
+    )
 
 
 def test_path_dependency_run_order(mocker: MockerFixture) -> None:
@@ -230,13 +247,13 @@ def test_path_dependency_run_order(mocker: MockerFixture) -> None:
             Project(
                 """
                 [tool.poetry.dependencies]
-                python = "^3.10"
+                python = "~3.12"
                 inner_1 = { path = "../inner_1", develop = true }
                 inner_2 = { path = "../inner_2", develop = false }
                 """,
                 """
                 [tool.poetry.dependencies]
-                python = "^3.10"
+                python = "~3.12"
                 inner_1 = { path = "../inner_1", develop = true }
                 inner_2 = { path = "../inner_2", develop = false }
                 """,
@@ -245,12 +262,12 @@ def test_path_dependency_run_order(mocker: MockerFixture) -> None:
             Project(
                 """
                 [tool.poetry.dependencies]
-                python = "^3.10"
+                python = "~3.12"
                 inner_2 = { path = "../inner_2", develop = false }
                 """,
                 """
                 [tool.poetry.dependencies]
-                python = "^3.10"
+                python = "~3.12"
                 inner_2 = { path = "../inner_2", develop = false }
                 """,
                 "inner_1",
@@ -258,13 +275,13 @@ def test_path_dependency_run_order(mocker: MockerFixture) -> None:
             Project(
                 """
                 [tool.poetry.dependencies]
-                python = "^3.10"
+                python = "~3.12"
                 shpyx = "0.0.13"
                 """,
                 """
                 [tool.poetry.dependencies]
-                python = "^3.10"
-                shpyx = "0.0.25"
+                python = "~3.12"
+                shpyx = "0.0.28"
                 """,
                 "inner_2",
             ),
@@ -277,11 +294,49 @@ def test_path_dependency_run_order(mocker: MockerFixture) -> None:
     # Verify that the updates were called in the correct order.
     cmd_runs = [(mock_call.args[0], Path(mock_call.kwargs["exec_dir"]).name) for mock_call in shpyx_run_spy.mock_calls]
     assert cmd_runs == [
-        ("poetry update --lock", "inner_2"),
+        ("poetry lock", "inner_2"),
+        ("poetry lock", "inner_1"),
+        ("poetry lock", "outer"),
         ("poetry show -o --no-ansi", "inner_2"),
         ("poetry update --lock", "inner_2"),
-        ("poetry update --lock", "inner_1"),
         ("poetry show -o --no-ansi", "inner_1"),
-        ("poetry update --lock", "outer"),
+        ("poetry update --lock", "inner_1"),
         ("poetry show -o --no-ansi", "outer"),
+        ("poetry update --lock", "outer"),
     ]
+
+
+def test_path_dependency_duplicates_dependency() -> None:
+    """Verify that the update succeeds when both the main project and the path dependency have the same dependency"""
+    _run_updater(
+        [
+            Project(
+                """
+                [tool.poetry.dependencies]
+                python = "~3.12"
+                inner = { path = "../inner", develop = true }
+                shpyx = "0.0.13"
+                """,
+                """
+                [tool.poetry.dependencies]
+                python = "~3.12"
+                inner = { path = "../inner", develop = true }
+                shpyx = "0.0.28"
+                """,
+                "outer",
+            ),
+            Project(
+                """
+                [tool.poetry.dependencies]
+                python = "~3.12"
+                shpyx = "0.0.13"
+                """,
+                """
+                [tool.poetry.dependencies]
+                python = "~3.12"
+                shpyx = "0.0.28"
+                """,
+                "inner",
+            ),
+        ],
+    )

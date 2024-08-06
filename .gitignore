@@ -1,3 +1,5 @@
 .idea
 .tmp
 __pycache__
+.venv
+.cspellcache

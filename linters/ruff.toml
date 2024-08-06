@@ -6,21 +6,27 @@
 line-length = 120
 
 # Python version.
-target-version = "py311"
+target-version = "py312"
 
 # Enable autofixing.
 fix = true
 
+# Output format, can be used to print more detailed errors.
+output-format = "concise"
+
 [format]
-# Enable everything by default.
-preview = true
+# Preview mode is unstable and should not be used.
+preview = false
 
 quote-style = "double"
 indent-style = "space"
 
+
 [lint]
-# Enable everything by default.
-preview = true
+# Preview mode is unstable and should not be used.
+preview = false
+
+# Enable everything else.
 select = ["ALL"]
 fixable = ["ALL"]
 unfixable = []
@@ -31,9 +37,8 @@ ignore = [
   # Ignored - Conflicts with Ruff formatter #
   ###########################################
   "COM812", # Trailing comma missing
-  "E203", # Whitespace before ':'
   "E501", # Line too long
-  "ISC001", # Implicitly concatenated string literals on one line
+  "ISC001", # Implicitly concatenated strings on a single line
   ##############
   # Pydocstyle #
   ##############
@@ -53,48 +58,40 @@ ignore = [
   ###################################
   # Other checks that we don't want #
   ###################################
-  "ANN101", # Missing type annotation for `self` in method
-  "ANN102", # Missing type annotation for `cls` in classmethod
   "ANN401", # Dynamically typed expressions (typing.Any) are disallowed
   "BLE001", # Do not catch blind exception: `Exception`
   "C901", # Method is too complex
-  "CPY001", # Missing copyright notice at top of file
   "EM101", # Exception must not use a string literal, assign to variable first
   "EM102", # Exception must not use an f-string literal, assign to variable first
   "ERA001", # Found commented-out code
   "FIX002", # Line contains TODO
-  "FURB101", # Replace `read` and `open` by `pathlib` methods.
+  "ISC003", # Explicitly concatenated string should be implicitly concatenate
   "N818", # Exception name should be named with an Error suffix
   "PD011", # Use `.to_numpy()` instead of `.values`
-  "PLR0904", # Too many public methods
   "PLR0911", # Too many return statements
   "PLR0912", # Too many branches
   "PLR0913", # Too many arguments to function call
-  "PLR0914", # Too many local variables
   "PLR0915", # Too many statements
-  "PLR0917", # Too many positional arguments
   "PLR1722", # Use `sys.exit()` instead of `exit`
   "PLR2004", # Magic value used in comparison, consider replacing with a constant variable
   "PLR5501", # Consider using `elif` instead of `else` then `if` to remove one indentation level
-  "PLR6301", # Method X could be a function or static method
-  "PLW1514", # `open` in text mode without explicit `encoding` argument
   "PTH123", # `open()` should be replaced by `Path.open()`
   "RET505", # Unnecessary `else` after `return` statement
   "RET506", # Unnecessary `else` after `raise` statement
   "SIM102", # Use a single `if` statement instead of nested `if` statements
+  "SIM103", # Return the condition directly
   "SIM105", # Use `contextlib.suppress()` instead of try-except-pass
   "TCH001", # Move application import into a type-checking block
   "TCH002", # Move third-party import into a type-checking block
-  "TCH003", # Move standard library import into a type-checking block
   "TD002", # Missing author in TODO
   "TD003", # Missing issue link on the line following this TODO
-  "TD005", # Missing issue description after `TODO`
   "TRY003", # Avoid specifying long messages outside the exception class
 ]
 
-
+[lint.isort]
 # Import sorting configuration.
-isort = {known-first-party = ["shared"], combine-as-imports = true}
+split-on-trailing-comma = false
+combine-as-imports = true
 
 [lint.pydocstyle]
 # Use Google-style docstrings.
@@ -110,10 +107,10 @@ builtins-ignorelist = ["id"]
 
 # Per file ignores.
 [lint.per-file-ignores]
-"src/*" = [
-  "T201", # `print` found
+"tests/*" = [
+  "S101", # Use of `assert` detected
 ]
 
-"tests/*" = [
-  "S101", # Use of assert detected
+"src/*" = [
+  "T201", # `print` found
 ]
