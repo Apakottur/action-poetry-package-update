@@ -231,9 +231,7 @@ def test_path_dependency_run_order(mocker: MockerFixture) -> None:
     tmp_dir = tempfile.TemporaryDirectory()
 
     # Make sure the results of `os.walk` are NOT in the correct update order.
-    def _os_walk(
-        path: str, *args: Any, **kwargs: Any
-    ) -> list[tuple[str, list[str], list[str]]]:
+    def _os_walk(path: str, *args: Any, **kwargs: Any) -> list[tuple[str, list[str], list[str]]]:
         assert (path, args, kwargs) == (tmp_dir.name, (), {})
         return [
             (tmp_dir, ["outer", "inner_1", "inner_2"], []),
@@ -294,18 +292,17 @@ def test_path_dependency_run_order(mocker: MockerFixture) -> None:
     tmp_dir.cleanup()
 
     # Verify that the updates were called in the correct order.
-    cmd_runs = [
-        (mock_call.args[0], Path(mock_call.kwargs["exec_dir"]).name)
-        for mock_call in shpyx_run_spy.mock_calls
-    ]
+    cmd_runs = [(mock_call.args[0], Path(mock_call.kwargs["exec_dir"]).name) for mock_call in shpyx_run_spy.mock_calls]
     assert cmd_runs == [
-        ("poetry update --lock", "inner_2"),
+        ("poetry lock", "inner_2"),
+        ("poetry lock", "inner_1"),
+        ("poetry lock", "outer"),
         ("poetry show -o --no-ansi", "inner_2"),
         ("poetry update --lock", "inner_2"),
-        ("poetry update --lock", "inner_1"),
         ("poetry show -o --no-ansi", "inner_1"),
-        ("poetry update --lock", "outer"),
+        ("poetry update --lock", "inner_1"),
         ("poetry show -o --no-ansi", "outer"),
+        ("poetry update --lock", "outer"),
     ]
 
 
