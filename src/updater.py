@@ -50,7 +50,9 @@ def _run_updater_in_path(path: str) -> None:
 
                 for details in current_poetry_section.values():
                     if "path" in details:
-                        file_path_to_deps[file_path.resolve()].append((Path(root) / details["path"] / name).resolve())
+                        file_path_to_deps[file_path.resolve()].append(
+                            (Path(root) / details["path"] / name).resolve()
+                        )
 
     # Order the projects based on interdependencies, where dependencies go first.
     def cmp(x: Path, y: Path) -> int:
@@ -62,7 +64,11 @@ def _run_updater_in_path(path: str) -> None:
 
     file_paths_in_order = sorted(file_path_to_deps, key=functools.cmp_to_key(cmp))
 
-    # Second iteration - run updates in order.
+    # Second iteration - make sure all projects have lock files.
+    for file_path in file_paths_in_order:
+        shpyx.run("poetry lock", exec_dir=file_path.parent)
+
+    # Third iteration - run updates in order.
     for file_path in file_paths_in_order:
         # Get the contents of the configuration file.
         file_contents = Path(file_path).read_text()
@@ -70,9 +76,6 @@ def _run_updater_in_path(path: str) -> None:
         poetry_section = parsed_contents["tool"]["poetry"]
 
         print(f"TOML contents of {file_path}: {parsed_contents}")
-
-        # Update the lock file, creating it if needed.
-        shpyx.run("poetry update --lock", exec_dir=file_path.parent)
 
         # Get all the outdated packages.
         results = shpyx.run("poetry show -o --no-ansi", exec_dir=file_path.parent)
@@ -111,7 +114,9 @@ def _run_updater_in_path(path: str) -> None:
                 if isinstance(package_details, str):
                     current_poetry_section[original_package_name] = new_version
                 else:
-                    current_poetry_section[original_package_name]["version"] = new_version
+                    current_poetry_section[original_package_name]["version"] = (
+                        new_version
+                    )
 
         # Write the updated configuration file.
         Path(file_path).write_text(parsed_contents.as_string())
