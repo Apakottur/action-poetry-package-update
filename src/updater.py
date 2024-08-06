@@ -50,7 +50,9 @@ def _run_updater_in_path(path: str) -> None:
 
                 for details in current_poetry_section.values():
                     if "path" in details:
-                        file_path_to_deps[file_path.resolve()].append((Path(root) / details["path"] / name).resolve())
+                        file_path_to_deps[file_path.resolve()].append(
+                            (Path(root) / details["path"] / name).resolve()
+                        )
 
     # Order the projects based on interdependencies, where dependencies go first.
     def cmp(x: Path, y: Path) -> int:
@@ -111,7 +113,9 @@ def _run_updater_in_path(path: str) -> None:
                 if isinstance(package_details, str):
                     current_poetry_section[original_package_name] = new_version
                 else:
-                    current_poetry_section[original_package_name]["version"] = new_version
+                    current_poetry_section[original_package_name]["version"] = (
+                        new_version
+                    )
 
         # Write the updated configuration file.
         Path(file_path).write_text(parsed_contents.as_string())
