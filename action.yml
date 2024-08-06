@@ -20,7 +20,9 @@ inputs:
   pr-body:
     description: "The body of the pull request"
     required: false
-    default: "Automated changes by [update-python-poetry-packages](https://github.com/Apakottur/action-poetry-package-update) GitHub action"
+    default:
+      "Automated changes by [update-python-poetry-packages](https://github.com/Apakottur/action-poetry-package-update)
+       GitHub action"
 runs:
   using: "composite"
   steps:

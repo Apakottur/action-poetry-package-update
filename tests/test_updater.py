@@ -87,70 +87,77 @@ def _run_updater(projects: list[Project], *, add_tool_poetry: bool = True, tmp_d
 
 def test_poetry_deps() -> None:
     """A package under `dependencies` is out of date"""
-    _run_updater([
-        Project(
-            """
+    _run_updater(
+        [
+            Project(
+                """
                 [tool.poetry.dependencies]
                 python = "^3.10"
                 shpyx = "0.0.13"
                 """,
-            """
+                """
                 [tool.poetry.dependencies]
                 python = "^3.10"
                 shpyx = "0.0.25"
                 """,
-        )
-    ])
+            )
+        ]
+    )
 
 
 def test_poetry_dev_deps() -> None:
     """A package under `dev-dependencies` is out of date"""
     # Old syntax.
-    _run_updater([
-        Project(
-            """
+    _run_updater(
+        [
+            Project(
+                """
                 [tool.poetry.dependencies]
                 python = "^3.10"
 
                 [tool.poetry.dev-dependencies]
                 shpyx = "0.0.13"
                 """,
-            """
+                """
                 [tool.poetry.dependencies]
                 python = "^3.10"
 
                 [tool.poetry.dev-dependencies]
                 shpyx = "0.0.25"
                 """,
-        )
-    ])
+            )
+        ]
+    )
 
     # New syntax.
-    _run_updater([
-        Project(
-            """
+    _run_updater(
+        [
+            Project(
+                """
                 [tool.poetry.dependencies]
                 python = "^3.10"
 
                 [tool.poetry.group.dev.dependencies]
                 shpyx = "0.0.13"
                 """,
-            """
+                """
                 [tool.poetry.dependencies]
                 python = "^3.10"
 
                 [tool.poetry.group.dev.dependencies]
                 shpyx = "0.0.25"
                 """,
-        )
-    ])
+            )
+        ]
+    )
 
 
 def test_multiline_deps() -> None:
     """A package with a multi-line configuration is out of date"""
-    _run_updater([
-        Project(
-            """
+    _run_updater(
+        [
+            Project(
+                """
                 [tool.poetry.dependencies]
                 python = "^3.10"
                 sqlalchemy = { extras = [
@@ -158,7 +165,7 @@ def test_multiline_deps() -> None:
                   "postgresql_asyncpg"
                 ], version = "1.4.36" }
                 """,
-            """
+                """
                 [tool.poetry.dependencies]
                 python = "^3.10"
                 sqlalchemy = { extras = [
@@ -166,44 +173,49 @@ def test_multiline_deps() -> None:
                   "postgresql_asyncpg"
                 ], version = "2.0.25" }
                 """,
-        )
-    ])
+            )
+        ]
+    )
 
 
 def test_no_changes() -> None:
     """Everything is up to date"""
-    _run_updater([
-        Project(
-            """
+    _run_updater(
+        [
+            Project(
+                """
                 [tool.poetry.dependencies]
                 python = "^3.10"
                 shpyx = "0.0.25"
                 """,
-            """
+                """
                 [tool.poetry.dependencies]
                 python = "^3.10"
                 shpyx = "0.0.25"
                 """,
-        )
-    ])
+            )
+        ]
+    )
 
 
 def test_casing() -> None:
     """Verify that lower/upper case in package names is preserved"""
-    _run_updater([
-        Project(
-            """
+    _run_updater(
+        [
+            Project(
+                """
                 [tool.poetry.dependencies]
                 python = "^3.10"
                 sHpYx = "0.0.13"
                 """,
-            """
+                """
                 [tool.poetry.dependencies]
                 python = "^3.10"
                 sHpYx = "0.0.25"
                 """,
-        )
-    ])
+            )
+        ]
+    )
 
 
 def test_path_dependency_run_order(mocker: MockerFixture) -> None:

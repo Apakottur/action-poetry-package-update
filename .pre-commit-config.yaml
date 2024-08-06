@@ -76,12 +76,6 @@ repos:
       - id: python-check-mock-methods
       - id: python-no-log-warn
       - id: python-use-type-annotations
-  - repo: https://github.com/MarcoGorelli/absolufy-imports
-    rev: v0.3.1
-    hooks:
-      - id: absolufy-imports
-        types: [file]
-        types_or: [python, pyi]
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.5.6
     hooks:
@@ -99,7 +93,7 @@ repos:
           - flake8-picky-parentheses==0.5.5
           - flake8-pyi==24.6.0
           - pep8-naming==0.14.1
-          - pydoclint==0.5.4
+          - pydoclint==0.5.6
         args: [--config, ./linters/.flake8]
         types: [file]
         types_or: [python, pyi]
