@@ -102,8 +102,19 @@ def _run_updater_in_path(path: str) -> None:
                         for name, details in current_poetry_section.items()
                         if name.lower() == package_name.lower()
                     )
+
+                    if isinstance(package_details, str):
+                        written_version = package_details
+                    else:
+                        written_version = package_details["version"]
+
                 except (StopIteration, tomlkit.exceptions.NonExistentKey):
                     # Either the section is missing or the package is not in this section.
+                    continue
+
+                # Skip packages that are locked via the '==' operator.
+                if written_version.startswith("=="):
+                    print("Skipping locked package:", package_name)
                     continue
 
                 print(f"Updating {package_name}: {installed_version} -> {new_version}")
