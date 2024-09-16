@@ -103,7 +103,7 @@ def test_poetry_deps() -> None:
                 """
                 [tool.poetry.dependencies]
                 python = "~3.12"
-                shpyx = "0.0.28"
+                shpyx = "0.0.29"
                 """,
             )
         ]
@@ -128,7 +128,7 @@ def test_poetry_dev_deps() -> None:
                 python = "~3.12"
 
                 [tool.poetry.dev-dependencies]
-                shpyx = "0.0.28"
+                shpyx = "0.0.29"
                 """,
             )
         ]
@@ -150,7 +150,7 @@ def test_poetry_dev_deps() -> None:
                 python = "~3.12"
 
                 [tool.poetry.group.dev.dependencies]
-                shpyx = "0.0.28"
+                shpyx = "0.0.29"
                 """,
             )
         ]
@@ -176,7 +176,7 @@ def test_multiline_deps() -> None:
                 sqlalchemy = { extras = [
                   "postgresql",
                   "postgresql_asyncpg"
-                ], version = "2.0.32" }
+                ], version = "2.0.34" }
                 """,
             )
         ]
@@ -191,12 +191,12 @@ def test_no_changes() -> None:
                 """
                 [tool.poetry.dependencies]
                 python = "~3.12"
-                shpyx = "0.0.28"
+                shpyx = "0.0.29"
                 """,
                 """
                 [tool.poetry.dependencies]
                 python = "~3.12"
-                shpyx = "0.0.28"
+                shpyx = "0.0.29"
                 """,
             )
         ]
@@ -216,7 +216,7 @@ def test_casing() -> None:
                 """
                 [tool.poetry.dependencies]
                 python = "~3.12"
-                sHpYx = "0.0.28"
+                sHpYx = "0.0.29"
                 """,
             )
         ]
@@ -281,7 +281,7 @@ def test_path_dependency_run_order(mocker: MockerFixture) -> None:
                 """
                 [tool.poetry.dependencies]
                 python = "~3.12"
-                shpyx = "0.0.28"
+                shpyx = "0.0.29"
                 """,
                 "inner_2",
             ),
@@ -321,7 +321,7 @@ def test_path_dependency_duplicates_dependency() -> None:
                 [tool.poetry.dependencies]
                 python = "~3.12"
                 inner = { path = "../inner", develop = true }
-                shpyx = "0.0.28"
+                shpyx = "0.0.29"
                 """,
                 "outer",
             ),
@@ -334,9 +334,31 @@ def test_path_dependency_duplicates_dependency() -> None:
                 """
                 [tool.poetry.dependencies]
                 python = "~3.12"
-                shpyx = "0.0.28"
+                shpyx = "0.0.29"
                 """,
                 "inner",
             ),
         ],
+    )
+
+
+def test_locked_version() -> None:
+    """Verify that packages with a '==' are ignored for updates"""
+    _run_updater(
+        [
+            Project(
+                """
+                [tool.poetry.dependencies]
+                python = "~3.12"
+                shpyx = "0.0.13"
+                sqlalchemy = "==1.4.36" # Locked for some reason.
+                """,
+                """
+                [tool.poetry.dependencies]
+                python = "~3.12"
+                shpyx = "0.0.29"
+                sqlalchemy = "==1.4.36" # Locked for some reason.
+                """,
+            )
+        ]
     )

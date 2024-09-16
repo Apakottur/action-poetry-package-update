@@ -120,9 +120,3 @@ git push -f origin v1.0.x v1
 ```
 
 4. Create and publish a release from the new tag.
-
-## TODO
-
-1. Run `mypy` in CI
-2. Add support for not updating specific packages
-3. Add input argument to specify paths (with the default checking the whole repo)
