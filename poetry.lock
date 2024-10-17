@@ -150,13 +150,13 @@ dev = ["pre-commit", "pytest-asyncio", "tox"]
 
 [[package]]
 name = "rich"
-version = "13.8.1"
+version = "13.9.2"
 description = "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
 optional = false
-python-versions = ">=3.7.0"
+python-versions = ">=3.8.0"
 files = [
-    {file = "rich-13.8.1-py3-none-any.whl", hash = "sha256:1760a3c0848469b97b558fc61c85233e3dafb69c7a071b4d60c38099d3cd4c06"},
-    {file = "rich-13.8.1.tar.gz", hash = "sha256:8260cda28e3db6bf04d2d1ef4dbc03ba80a824c88b0e7668a0f23126a424844a"},
+    {file = "rich-13.9.2-py3-none-any.whl", hash = "sha256:8c82a3d3f8dcfe9e734771313e606b39d8247bb6b826e196f4914b333b743cf1"},
+    {file = "rich-13.9.2.tar.gz", hash = "sha256:51a2c62057461aaf7152b4d611168f93a9fc73068f8ded2790f29fe2b5366d0c"},
 ]
 
 [package.dependencies]
@@ -179,13 +179,13 @@ files = [
 
 [[package]]
 name = "shpyx"
-version = "0.0.29"
+version = "0.0.30"
 description = "Run shell commands in Python"
 optional = false
 python-versions = "<4.0,>=3.9"
 files = [
-    {file = "shpyx-0.0.29-py3-none-any.whl", hash = "sha256:4787f33511ebe73527b6b277de78ac08e132e8920e020996406795dfd62afb6c"},
-    {file = "shpyx-0.0.29.tar.gz", hash = "sha256:b8fd641ab01560bb2abf9c5a94db6f51979e7b4849674533c4644e9ee335258e"},
+    {file = "shpyx-0.0.30-py3-none-any.whl", hash = "sha256:77d192d6fa834fc4440d0961bf5a27f9df09f42d0afa210b7a11bba05e9c3c73"},
+    {file = "shpyx-0.0.30.tar.gz", hash = "sha256:2e6b2d68b3726414433c5e771c869a4dce7888f1d92ed97f19aaf379dc5cfd8f"},
 ]
 
 [[package]]
@@ -230,4 +230,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12"
-content-hash = "3ebb5e794fdbca5c0912feea37cecd1b8f1ea142d37614c12d81d81112760e19"
+content-hash = "b6897da316e6b8f4d7563ca2871ab4aade6754ac3b69c08a923a07fdbb595cc7"

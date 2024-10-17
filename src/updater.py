@@ -10,7 +10,7 @@ import tomlkit.exceptions
 POETRY_CONFIG_FILE_NAME = "pyproject.toml"
 
 """Sections in the Poetry configuration files where dependencies reside"""
-SECTIONS = ("dependencies", "dev-dependencies", "group.dev.dependencies", "")
+SECTIONS = ("dependencies", "dev-dependencies")
 
 
 def _run_updater_in_path(path: str) -> None:
@@ -40,15 +40,18 @@ def _run_updater_in_path(path: str) -> None:
 
             # Build the mapping from projects to their path dependencies.
             file_path_to_deps[file_path.resolve()] = []
-            for section in SECTIONS:
-                try:
-                    current_poetry_section = poetry_section
-                    for part in section.split("."):
-                        current_poetry_section = current_poetry_section[part]
-                except tomlkit.exceptions.NonExistentKey:
+            pairs_to_check = list(poetry_section.items())
+            while pairs_to_check:
+                current_pair = pairs_to_check.pop()
+                if current_pair[0] in SECTIONS:
+                    current_section = current_pair[1]
+                elif isinstance(current_pair[1], dict):
+                    pairs_to_check.extend(current_pair[1].items())
+                    continue
+                else:
                     continue
 
-                for details in current_poetry_section.values():
+                for details in current_section.values():
                     if "path" in details:
                         file_path_to_deps[file_path.resolve()].append((Path(root) / details["path"] / name).resolve())
 
@@ -75,8 +78,13 @@ def _run_updater_in_path(path: str) -> None:
 
         print(f"TOML contents of {file_path}: {parsed_contents}")
 
+        # Construct the poetry command to get outdated packages.
+        poetry_cmd = "poetry show -o --no-ansi"
+        if group_section := parsed_contents["tool"]["poetry"].get("group"):
+            poetry_cmd += f" --with {','.join(group_section.keys())}"
+
         # Get all the outdated packages.
-        results = shpyx.run("poetry show -o --no-ansi", exec_dir=file_path.parent)
+        results = shpyx.run(poetry_cmd, exec_dir=file_path.parent)
 
         if not results.stdout:
             # Nothing to update.
@@ -91,26 +99,31 @@ def _run_updater_in_path(path: str) -> None:
             package_name, installed_version, new_version = formatted_result.split()[:3]
 
             # Update the package version in the file.
-            for section in SECTIONS:
-                try:
-                    current_poetry_section = poetry_section
-                    for part in section.split("."):
-                        current_poetry_section = current_poetry_section[part]
+            pairs_to_check = list(poetry_section.items())
+            while pairs_to_check:
+                current_pair = pairs_to_check.pop()
+                if current_pair[0] in SECTIONS:
+                    current_section = current_pair[1]
+                elif isinstance(current_pair[1], dict):
+                    pairs_to_check.extend(current_pair[1].items())
+                    continue
+                else:
+                    continue
 
+                try:
                     original_package_name, package_details = next(
                         (name, details)
-                        for name, details in current_poetry_section.items()
+                        for name, details in current_section.items()
                         if name.lower() == package_name.lower()
                     )
-
-                    if isinstance(package_details, str):
-                        written_version = package_details
-                    else:
-                        written_version = package_details["version"]
-
-                except (StopIteration, tomlkit.exceptions.NonExistentKey):
-                    # Either the section is missing or the package is not in this section.
+                except StopIteration:
+                    # The package is not in this section.
                     continue
+
+                if isinstance(package_details, str):  # noqa: SIM108
+                    written_version = package_details
+                else:
+                    written_version = package_details["version"]
 
                 # Skip packages that are locked via the '==' operator.
                 if written_version.startswith("=="):
@@ -121,9 +134,9 @@ def _run_updater_in_path(path: str) -> None:
 
                 # Replace the old version of the package with the new one.
                 if isinstance(package_details, str):
-                    current_poetry_section[original_package_name] = new_version
+                    current_section[original_package_name] = new_version
                 else:
-                    current_poetry_section[original_package_name]["version"] = new_version
+                    current_section[original_package_name]["version"] = new_version
 
         # Write the updated configuration file.
         Path(file_path).write_text(parsed_contents.as_string())
