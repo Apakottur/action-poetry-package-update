@@ -359,14 +359,14 @@ files = [
 
 [[package]]
 name = "shpyx"
-version = "0.0.32"
+version = "0.0.33"
 description = "Run shell commands in Python"
 optional = false
 python-versions = "<4.0,>=3.9"
 groups = ["main"]
 files = [
-    {file = "shpyx-0.0.32-py3-none-any.whl", hash = "sha256:87ec828b3ebca9f072c7f43f648472fa3773a797a689d5e25496ccd4ca75b1a7"},
-    {file = "shpyx-0.0.32.tar.gz", hash = "sha256:4ac7387bb1f20a68e54891c50466ce725b57c23ca0c730f3499665e002479a13"},
+    {file = "shpyx-0.0.33-py3-none-any.whl", hash = "sha256:abf480f5ecc18fdb19cb3ed3b37901a6d09659be4bc79f8783f23d127f25a156"},
+    {file = "shpyx-0.0.33.tar.gz", hash = "sha256:75a414950c1683576cab28d4e7ef92ba5685a70d554d7c22e480f1996a1a11b8"},
 ]
 
 [[package]]
@@ -435,4 +435,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.1"
 python-versions = "~3.12"
-content-hash = "b36a2bab2f9b118c146c65d60588fc26b739e638214953600a7c6435fa46be22"
+content-hash = "b71718559939f82320fe6735a65de5250590110f05ceb1bc5bfd45343848baec"

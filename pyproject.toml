@@ -6,7 +6,7 @@ authors = []
 
 [tool.poetry.dependencies]
 python = "~3.12"
-shpyx = "0.0.32"
+shpyx = "0.0.33"
 tomlkit = "0.13.2"
 typer = "0.15.2"
 
