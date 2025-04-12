@@ -5,17 +5,17 @@ from typing import Any
 
 from pytest_mock import MockerFixture
 
-import updater
-from updater import POETRY_CONFIG_FILE_NAME, run_updater
+import src.updater
+from src.updater import POETRY_CONFIG_FILE_NAME, run_updater
 
 SHPYX_OLD_VERSION = '"0.0.13"'
-SHPYX_NEW_VERSION = '"0.0.30"'
+SHPYX_NEW_VERSION = '"0.0.33"'
 
 SQLA_OLD_VERSION = '"1.4.36"'
-SQLA_NEW_VERSION = '"2.0.36"'
+SQLA_NEW_VERSION = '"2.0.40"'
 
 PIL_OLD_VERSION = '"10.4.0"'
-PIL_NEW_VERSION = '"11.0.0"'
+PIL_NEW_VERSION = '"11.1.0"'
 
 
 @dataclass
@@ -60,6 +60,7 @@ def _run_updater(
                     version = "1.0.0"
                     description = ""
                     authors = []
+                    package-mode = false
 
                     {project.before}
                     """
@@ -69,6 +70,7 @@ def _run_updater(
                     version = "1.0.0"
                     description = ""
                     authors = []
+                    package-mode = false
 
                     {project.after}
                     """
@@ -236,7 +238,7 @@ def test_casing() -> None:
 def test_path_dependency_run_order(mocker: MockerFixture) -> None:
     """Verify that the update order is correct when using path dependencies"""
     # Track calls to "shpyx.run".
-    shpyx_run_spy = mocker.spy(updater.shpyx, "run")
+    shpyx_run_spy = mocker.spy(src.updater.shpyx, "run")
 
     tmp_dir = tempfile.TemporaryDirectory()
 

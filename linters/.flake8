@@ -46,6 +46,8 @@ ignore =
     PAR104
     # Line break occurred before a binary operator
     W503
+    # line break after binary operator
+    W504
 
     #############################
     # Ignored - duplicates Ruff #
@@ -64,6 +66,8 @@ ignore =
     C419
     # Module level import not at top of file
     E402
+    # Multiple statements on one line (colon)
+    E701
     # Comparison to False should be 'if condition is False:' or 'if not condition:'
     E712
     # Do not assign a lambda expression, use a def
@@ -92,16 +96,14 @@ ignore =
     DOC203
     # Class X should not have a docstring; please combine it with the docstring of the class
     DOC301
+    # Function X has "yield" statements, but the docstring does not have a "Yields" section
+    DOC402
     # Method X yield type(s) in docstring not consistent with the return annotation.
     DOC404
-
-    ###################################
-    # Other checks that we don't want #
-    ###################################
-    # Method is too complex
-    C901
-    # Exception name should be named with an Error suffix
-    N818
+    # Class X: Class docstring contains fewer class attributes than actual class attributes.
+    DOC601
+    # Class X: Class docstring attributes are different from actual class attributes.
+    DOC603
 
 # Maximum line length.
 max-line-length = 120
@@ -109,3 +111,4 @@ max-line-length = 120
 # Pydoclint
 style = google
 arg-type-hints-in-docstring = False
+skip-checking-short-docstrings = False
