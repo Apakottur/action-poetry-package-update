@@ -114,3 +114,7 @@ builtins-ignorelist = ["id"]
 "tests/*" = [
   "S101", # Use of `assert` detected
 ]
+
+"src/*" = [
+  "T201", # `print` found
+]
