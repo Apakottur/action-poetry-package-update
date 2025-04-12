@@ -28,3 +28,4 @@ ignorelist
 docstrings
 biomejs
 sqla
+mvdan
