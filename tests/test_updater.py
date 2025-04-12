@@ -3,8 +3,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-import updater
 from pytest_mock import MockerFixture
+
+import updater
 from updater import POETRY_CONFIG_FILE_NAME, run_updater
 
 
