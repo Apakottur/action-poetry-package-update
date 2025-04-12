@@ -8,6 +8,15 @@ from pytest_mock import MockerFixture
 import updater
 from updater import POETRY_CONFIG_FILE_NAME, run_updater
 
+SHPYX_OLD_VERSION = '"0.0.13"'
+SHPYX_NEW_VERSION = '"0.0.30"'
+
+SQLA_OLD_VERSION = '"1.4.36"'
+SQLA_NEW_VERSION = '"2.0.36"'
+
+PIL_OLD_VERSION = '"10.4.0"'
+PIL_NEW_VERSION = '"11.0.0"'
+
 
 @dataclass
 class Project:
@@ -96,15 +105,15 @@ def test_poetry_deps() -> None:
     _run_updater(
         [
             Project(
-                """
+                f"""
                 [tool.poetry.dependencies]
                 python = "~3.12"
-                shpyx = "0.0.13"
+                shpyx = {SHPYX_OLD_VERSION}
                 """,
-                """
+                f"""
                 [tool.poetry.dependencies]
                 python = "~3.12"
-                shpyx = "0.0.29"
+                shpyx = {SHPYX_NEW_VERSION}
                 """,
             )
         ]
@@ -117,19 +126,19 @@ def test_poetry_dev_deps() -> None:
     _run_updater(
         [
             Project(
-                """
+                f"""
                 [tool.poetry.dependencies]
                 python = "~3.12"
 
                 [tool.poetry.dev-dependencies]
-                shpyx = "0.0.13"
+                shpyx = {SHPYX_OLD_VERSION}
                 """,
-                """
+                f"""
                 [tool.poetry.dependencies]
                 python = "~3.12"
 
                 [tool.poetry.dev-dependencies]
-                shpyx = "0.0.29"
+                shpyx = {SHPYX_NEW_VERSION}
                 """,
             )
         ]
@@ -139,19 +148,19 @@ def test_poetry_dev_deps() -> None:
     _run_updater(
         [
             Project(
-                """
+                f"""
                 [tool.poetry.dependencies]
                 python = "~3.12"
 
                 [tool.poetry.group.dev.dependencies]
-                shpyx = "0.0.13"
+                shpyx = {SHPYX_OLD_VERSION}
                 """,
-                """
+                f"""
                 [tool.poetry.dependencies]
                 python = "~3.12"
 
                 [tool.poetry.group.dev.dependencies]
-                shpyx = "0.0.29"
+                shpyx = {SHPYX_NEW_VERSION}
                 """,
             )
         ]
@@ -163,21 +172,21 @@ def test_multiline_deps() -> None:
     _run_updater(
         [
             Project(
-                """
+                f"""
                 [tool.poetry.dependencies]
                 python = "~3.12"
-                sqlalchemy = { extras = [
+                sqlalchemy = {{ extras = [
                   "postgresql",
                   "postgresql_asyncpg"
-                ], version = "1.4.36" }
+                ], version = {SQLA_OLD_VERSION} }}
                 """,
-                """
+                f"""
                 [tool.poetry.dependencies]
                 python = "~3.12"
-                sqlalchemy = { extras = [
+                sqlalchemy = {{ extras = [
                   "postgresql",
                   "postgresql_asyncpg"
-                ], version = "2.0.34" }
+                ], version = {SQLA_NEW_VERSION} }}
                 """,
             )
         ]
@@ -189,15 +198,15 @@ def test_no_changes() -> None:
     _run_updater(
         [
             Project(
-                """
+                f"""
                 [tool.poetry.dependencies]
                 python = "~3.12"
-                shpyx = "0.0.29"
+                shpyx = {SHPYX_NEW_VERSION}
                 """,
-                """
+                f"""
                 [tool.poetry.dependencies]
                 python = "~3.12"
-                shpyx = "0.0.29"
+                shpyx = {SHPYX_NEW_VERSION}
                 """,
             )
         ]
@@ -209,15 +218,15 @@ def test_casing() -> None:
     _run_updater(
         [
             Project(
-                """
+                f"""
                 [tool.poetry.dependencies]
                 python = "~3.12"
-                sHpYx = "0.0.13"
+                shpyx = {SHPYX_OLD_VERSION}
                 """,
-                """
+                f"""
                 [tool.poetry.dependencies]
                 python = "~3.12"
-                sHpYx = "0.0.29"
+                shpyx = {SHPYX_NEW_VERSION}
                 """,
             )
         ]
@@ -274,15 +283,15 @@ def test_path_dependency_run_order(mocker: MockerFixture) -> None:
                 "inner_1",
             ),
             Project(
-                """
+                f"""
                 [tool.poetry.dependencies]
                 python = "~3.12"
-                shpyx = "0.0.13"
+                shpyx = {SHPYX_OLD_VERSION}
                 """,
-                """
+                f"""
                 [tool.poetry.dependencies]
                 python = "~3.12"
-                shpyx = "0.0.29"
+                shpyx = {SHPYX_NEW_VERSION}
                 """,
                 "inner_2",
             ),
@@ -312,30 +321,30 @@ def test_path_dependency_duplicates_dependency() -> None:
     _run_updater(
         [
             Project(
-                """
+                f"""
                 [tool.poetry.dependencies]
                 python = "~3.12"
-                inner = { path = "../inner", develop = true }
-                shpyx = "0.0.13"
+                inner = {{ path = "../inner", develop = true }}
+                shpyx = {SHPYX_OLD_VERSION}
                 """,
-                """
+                f"""
                 [tool.poetry.dependencies]
                 python = "~3.12"
-                inner = { path = "../inner", develop = true }
-                shpyx = "0.0.29"
+                inner = {{ path = "../inner", develop = true }}
+                shpyx = {SHPYX_NEW_VERSION}
                 """,
                 "outer",
             ),
             Project(
-                """
+                f"""
                 [tool.poetry.dependencies]
                 python = "~3.12"
-                shpyx = "0.0.13"
+                shpyx = {SHPYX_OLD_VERSION}
                 """,
-                """
+                f"""
                 [tool.poetry.dependencies]
                 python = "~3.12"
-                shpyx = "0.0.29"
+                shpyx = {SHPYX_NEW_VERSION}
                 """,
                 "inner",
             ),
@@ -348,17 +357,55 @@ def test_locked_version() -> None:
     _run_updater(
         [
             Project(
-                """
+                f"""
                 [tool.poetry.dependencies]
                 python = "~3.12"
-                shpyx = "0.0.13"
+                shpyx = {SHPYX_OLD_VERSION}
                 sqlalchemy = "==1.4.36" # Locked for some reason.
                 """,
-                """
+                f"""
                 [tool.poetry.dependencies]
                 python = "~3.12"
-                shpyx = "0.0.29"
+                shpyx = {SHPYX_NEW_VERSION}
                 sqlalchemy = "==1.4.36" # Locked for some reason.
+                """,
+            )
+        ]
+    )
+
+
+def test_custom_groups() -> None:
+    """Verify that packages under custom groups are updates"""
+    _run_updater(
+        [
+            Project(
+                f"""
+                [tool.poetry.dependencies]
+                python = "~3.12"
+                shpyx = {SHPYX_OLD_VERSION}
+
+                [tool.poetry.group.first_group]
+                optional = true
+
+                [tool.poetry.group.first_group.dependencies]
+                sqlalchemy = {SQLA_OLD_VERSION}
+
+                [tool.poetry.group.second_group.dependencies]
+                pillow = {PIL_OLD_VERSION}
+                """,
+                f"""
+                [tool.poetry.dependencies]
+                python = "~3.12"
+                shpyx = {SHPYX_NEW_VERSION}
+
+                [tool.poetry.group.first_group]
+                optional = true
+
+                [tool.poetry.group.first_group.dependencies]
+                sqlalchemy = {SQLA_NEW_VERSION}
+
+                [tool.poetry.group.second_group.dependencies]
+                pillow = {PIL_NEW_VERSION}
                 """,
             )
         ]

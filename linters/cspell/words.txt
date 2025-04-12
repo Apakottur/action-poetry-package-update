@@ -27,3 +27,4 @@ pydantic
 ignorelist
 docstrings
 biomejs
+sqla
